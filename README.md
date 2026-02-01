@@ -33,7 +33,7 @@ The application fetches jokes from the [Official Joke API](https://official-joke
 ### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/peanque/random-jokes.git
 cd random-jokes
 ```
 
