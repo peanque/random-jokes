@@ -9,6 +9,7 @@ use App\Interfaces\UserRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\ValidationException;
 
 class AuthService implements AuthServiceInterface
 {
@@ -30,7 +31,9 @@ class AuthService implements AuthServiceInterface
         try {
             $user = $this->userRepository->findByEmail($email);
         } catch (ModelNotFoundException $e) {
-            throw new \Exception('Invalid credentials');
+            throw ValidationException::withMessages([
+                'email' => 'Authentication Failed'
+            ]);
         }
 
         if (!Hash::check($password, $user->password)) {
@@ -38,19 +41,15 @@ class AuthService implements AuthServiceInterface
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
-        
+
         return [
             'user' => $user,
             'token' => $token,
         ];
     }
 
-    public function logout(): void
+    public function logout(User $user): void
     {
-        $user = Auth::guard('sanctum')->user();
-
-        if ($user) {
-            $user->tokens()->delete();
-        }
+        $user->currentAccessToken()->delete();
     }
 }

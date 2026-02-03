@@ -11,5 +11,5 @@ interface AuthServiceInterface
 
     public function login(string $email, string $password): array;
 
-    public function logout(): void;
+    public function logout(User $user): void;
 }
