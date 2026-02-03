@@ -20,7 +20,7 @@ class UserRepository implements UserRepositoryInterface
 
     public function update(UserDto $userDto): User
     {
-        return User::where('id', $userDto->id)->update($userDto->toArray());
+        return User::findOrFail('id', $userDto->id)->update($userDto->toArray());
     }
 
     public function delete(int $id): void

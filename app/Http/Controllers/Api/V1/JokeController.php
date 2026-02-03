@@ -14,7 +14,13 @@ class JokeController extends Controller
 
     public function getRandomJoke()
     {
-        $jokes = $this->jokeService->getRandomJoke();
-        return response()->json($jokes);
+        try {
+            $jokes = $this->jokeService->getRandomJoke();
+            return response()->json($jokes);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }
