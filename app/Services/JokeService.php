@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Http;
 class JokeService implements JokeServiceInterface
 {
 
-    private string $apiUrl = 'https://official-joke-api.appspot.com/jokes/programming/4/';
+    private string $apiUrl = 'https://official-joke-api.appspot.com/jokes/programming/ten/';
 
     public function getRandomJoke(): array
     {
