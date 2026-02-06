@@ -9,28 +9,27 @@ use Illuminate\Support\Facades\Http;
 class JokeService implements JokeServiceInterface
 {
 
-    private string $apiUrl = 'https://official-joke-api.appspot.com/jokes/programming/ten/';
+    private string $apiUrl = 'https://official-joke-api.appspot.com/jokes/programming/4/';
 
     public function getRandomJoke(): array
     {
         $http = Http::timeout(5);
         $http = $http->withoutVerifying();
-        $errorAPI = false;
 
         $response = $http->get($this->apiUrl);
 
         $count = 3;
+        $jokes = [];
 
         if (!$response->successful()) {
-            $errorAPI = true;
             $jokes = $this->getCachedJoke($count);
         } else {
-            $jokes = $response->json();
-            $this->cacheRandomJoke($jokes);
-        }
+            $jokeResponse = $response->json();
 
-        if (! is_array($jokes) || empty($jokes) && $errorAPI) {
-            $jokes = [];
+            $this->cacheRandomJoke($jokeResponse);
+
+            $keys = array_rand($jokeResponse, $count);
+            $jokes = array_map(fn($key) => $jokeResponse[$key], $keys);
         }
 
         return $jokes;
