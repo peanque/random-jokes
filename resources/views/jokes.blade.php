@@ -19,6 +19,15 @@
     @endif
 </head>
 <body class="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 min-h-screen p-4">
+    <div>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button
+                class="gap-2 px-6 py-3 bg-blue-200 text-blue-950 rounded-lg hover:cursor-pointer">
+                Logout
+            </button>
+        </form>
+    </div>
     <div class="max-w-6xl mx-auto">
         <div class="mb-8 text-center">
             <h1 class="text-4xl font-semibold text-slate-900 dark:text-white mb-2">Random Jokes Viewer</h1>
