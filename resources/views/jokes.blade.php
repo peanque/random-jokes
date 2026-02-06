@@ -27,7 +27,7 @@
 
         <div class="mb-6 flex justify-center">
             <form action="{{ route('jokes') }}" method="GET" class="inline-block">
-                <button 
+                <button
                     type="submit"
                     class="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-lg hover:shadow-xl hover:cursor-pointer transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
@@ -35,35 +35,42 @@
                 </button>
             </form>
         </div>
-
+        @if ($jokes)
         <div id="jokesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach ($jokes as $joke)
-                <div class="joke-card bg-white dark:bg-slate-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200 p-6 border border-slate-200 dark:border-slate-700">
-                    <div class="flex items-start mb-4">
-                        <p class="text-green-500 dark:text-green-200 text-lg font-medium leading-relaxed">
-                            <span class="text-blue-500 dark:text-blue-200 text-lg font-medium leading-relaxed">Category:</span>
-                            <br>
-                            {{ ucfirst($joke['type']) }}
-                        </p>
-                    </div>
-                    <div class="space-y-3">
-                        <p class="text-slate-800 dark:text-slate-200 text-lg font-medium leading-relaxed">
-                            <span class="text-blue-500 dark:text-blue-200 text-lg font-medium leading-relaxed">Question:</span>
-                            <br>
-                            {{ $joke['setup'] }}
-                        </p>
-                        <div class="pt-3 border-t border-slate-200 dark:border-slate-700">
-                            <span class="text-blue-500 dark:text-blue-200 text-lg font-medium leading-relaxed">Answer:</span>
-                            <br>
-                            <p class="text-blue-600 dark:text-blue-400 text-base font-semibold">
-                                {{ $joke['punchline'] }}
+
+                @foreach ($jokes as $joke)
+                    <div class="joke-card bg-white dark:bg-slate-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200 p-6 border border-slate-200 dark:border-slate-700">
+                        <div class="flex items-start mb-4">
+                            <p class="text-green-500 dark:text-green-200 text-lg font-medium leading-relaxed">
+                                <span class="text-blue-500 dark:text-blue-200 text-lg font-medium leading-relaxed">Category:</span>
+                                <br>
+                                {{ ucfirst($joke['type']) }}
                             </p>
                         </div>
+                        <div class="space-y-3">
+                            <p class="text-slate-800 dark:text-slate-200 text-lg font-medium leading-relaxed">
+                                <span class="text-blue-500 dark:text-blue-200 text-lg font-medium leading-relaxed">Question:</span>
+                                <br>
+                                {{ $joke['setup'] }}
+                            </p>
+                            <div class="pt-3 border-t border-slate-200 dark:border-slate-700">
+                                <span class="text-blue-500 dark:text-blue-200 text-lg font-medium leading-relaxed">Answer:</span>
+                                <br>
+                                <p class="text-blue-600 dark:text-blue-400 text-base font-semibold">
+                                    {{ $joke['punchline'] }}
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            @endforeach
+                @endforeach
         </div>
-
+        @else
+            <div class="flex items-center justify-center">
+                <div class="text-white">
+                    <p class="text-center text-slate-600 dark:text-slate-400 text-lg font-medium">No jokes available at the moment. Please try again later.</p>
+                </div>
+            </div>
+        @endif
     </div>
 </body>
 </html>

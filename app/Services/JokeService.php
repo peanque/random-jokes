@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Interfaces\JokeServiceInterface;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 class JokeService implements JokeServiceInterface
@@ -17,18 +18,42 @@ class JokeService implements JokeServiceInterface
 
         $response = $http->get($this->apiUrl);
 
+        $count = 3;
+        $jokes = [];
+
         if (!$response->successful()) {
-            throw new \Exception('Failed to fetch jokes');
+            $jokes = $this->getCachedJoke($count);
+        } else {
+            $jokeResponse = $response->json();
+
+            $this->cacheRandomJoke($jokeResponse);
+
+            $keys = array_rand($jokeResponse, $count);
+            $jokes = array_map(fn($key) => $jokeResponse[$key], $keys);
         }
 
-        $jokes = $response->json();
+        return $jokes;
+    }
 
-        if (! is_array($jokes) || empty($jokes)) {
-            throw new \Exception('Invalid joke response.');
+    public function cacheRandomJoke(array $jokes): void
+    {
+        Cache::put('jokes', json_encode($jokes), now()->addMinutes(30));
+    }
+
+    public function getCachedJoke(int $count): array
+    {
+        $cachedJokes = Cache::get('jokes');
+
+        if (! $cachedJokes) {
+            return [];
         }
 
-        $keys = array_rand($jokes, 3);
-        
-        return array_map(fn($key) => $jokes[$key], $keys);
+        $jokes = json_decode($cachedJokes, true);
+
+        $keys = array_rand($jokes, $count);
+
+        $randomJokes = array_map(fn($keys) => $jokes[$keys] , $keys);
+
+        return $randomJokes;
     }
 }
