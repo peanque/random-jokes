@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Interfaces\JokeServiceInterface;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -32,25 +33,30 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
-        try {
-            $user = $this->userRepository->findByEmail($request->email);
-        } catch (ModelNotFoundException $e) {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
+
+        if (!Auth::attempt($credentials)) {
             return back()->withErrors([
-                'email' => 'These credentials do not match our records.',
-            ])->withInput($request->only('email'));
+                'email' => 'Invalid credentials',
+            ]);
         }
 
-        if (!Hash::check($request->password, $user->password)) {
-            return back()->withErrors([
-                'email' => 'These credentials do not match our records.',
-            ])->withInput($request->only('email'));
-        }
+        $request->session()->regenerate();
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        return redirect()->intended('jokes');
+    }
 
-        session(['auth_token' => $token]);
+    public function logout(Request $request)
+    {
+        Auth::logout();
 
-        return redirect()->intended('/jokes');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login');
     }
 
     public function register(RegisterRequest $request)

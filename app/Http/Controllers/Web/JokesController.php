@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\EnsureUserIsAuthenticated;
 use Illuminate\Http\Request;
 use App\Interfaces\JokeServiceInterface;
 
